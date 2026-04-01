@@ -1,0 +1,711 @@
+@extends('layouts.website.master')
+@section('title')
+    {{__("products-details")}}
+@endsection
+
+@section('content')
+    <style>
+        .attribute_color .list-color a {
+            display: inline-block;
+            height: 58px!important;
+            margin-bottom: 15px!important;
+            margin-left: 17px;
+            position: relative;
+            text-align: center;
+            width: 139px!important;
+            line-height: 27px;
+            float: right;
+            border-radius: 0;
+            font-size: large!important;
+			padding:3px;
+
+
+            color: aliceblue !important;
+
+        }
+		
+	.block-minicart_detail .shopcart-icon:before {
+    content: "\f137";
+    font-family: Flaticon;
+    font-size: 26px;
+    font-weight: normal;
+    position: relative;
+   /* top: -9rem !important;*/
+	margin-left:21rem !important;
+}
+		
+	.block-minicart_detail .shopcart-icon {
+    font-size: 14px;
+    font-family: 'Jost';
+    color: #555555;
+    position: relative;
+    text-transform: uppercase;
+    font-weight: 600;
+    /* border: 2px solid #e9e9e9; */
+   /* padding: 0 15px;*/
+    height: 43px;
+    display: inline-block;
+    line-height: 37px;
+   /* width: 102px;
+    border-radius: 30px;*/
+}
+		.block-minicart_detail .shopcart-icon::after {
+/*content: "\f107";*/
+    font-family: 'FontAwesome';
+    position: absolute;
+    display: inline-block;
+    color: #888;
+    top: 0;
+    right: 30px;
+    font-weight: normal;
+}
+		.block-minicart_detail .shopcart-icon .count {
+    position: absolute;
+    display: inline-block;
+    text-align: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+   /* top: -9rem !important;*/
+    right: 0px !important;
+    color: #ffffff;
+    font-size: 14px;
+    line-height: 22px;
+}
+
+.block-minicart_detail .shopcart-icon:before {
+
+
+content: "\f137";
+    font-family: Flaticon;
+    font-size: 26px;
+    font-weight: normal;
+    position: relative;
+    top: -38px !important;
+    margin-left: 25rem !important;
+}
+    </style>
+    <?php
+        $variations=json_decode($product->variations);
+           /* if($product->variations!="") {
+             foreach (json_decode($product->variations, true) as $var) {
+                 array_push($variations, [
+                     'type' => $var['type'],
+                     'price' => (float)$var['price']
+                 ]);
+
+     }
+                                      }*/
+
+    ?>
+    <div class="main-content main-content-details single no-sidebar">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb-trail breadcrumbs">
+                        <ul class="trail-items breadcrumb">
+                            <li class="trail-item trail-begin">
+                                <a href="{{route('home.index')}}">{{__('Home')}}</a>
+                            </li>
+                            <li class="trail-item">
+                                <a href="#">{{__('products')}}</a>
+                            </li>
+                            <li class="trail-item trail-end active">
+                                {{$product->name}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+        <div class="content-area content-details full-width col-lg-9 col-md-8 col-sm-12 col-xs-12">
+            <div class="site-main">
+                <div class="details-product">
+                    <div class="details-thumd">
+                        <div class="image-preview-container image-thick-box image_preview_container">
+                            <img id="img_zoom" data-zoom-image="{{asset($product['image'])}}"
+                                 src="{{asset($product['image'])}}" alt="img">
+                            <a href="#" class="btn-zoom open_qv"><i class="fa fa-search" aria-hidden="true"></i></a>
+                        </div>
+                        <div class="product-preview image-small product_preview">
+                            <div id="thumbnails" class="thumbnails_carousel owl-carousel" data-nav="true"
+                                 data-autoplay="false" data-dots="false" data-loop="false" data-margin="10"
+                                 data-responsive='{"0":{"items":3},"480":{"items":3},"600":{"items":3},"1000":{"items":3}}'>
+                                @if(!empty($product['slider']))
+                                    @foreach($product['slider'] as $slider)
+                                <a href="#" data-image="{{asset($slider['image_path'])}}"
+                                   data-zoom-image="{{asset($slider['image_path'])}}" class="active">
+                                    <img src="{{asset($slider['image_path'])}}"
+                                         data-large-image="{{asset($slider['image_path'])}}" alt="img">
+                                </a>
+                                    @endforeach
+                                    @endif
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="details-infor">
+                        <h1 class="product-title">
+                            {{$product->name}}
+                        </h1>
+                       <!-- <img src="{{asset('website/assets/images/buy-2-get-1-free.png')}}" style="
+    height: 10rem;
+    width: 15rem;
+    float: right;
+    z-index: 168;
+"/>--><!--buy-2-get-1-free.png-->
+<img @if(($product->category_id)==113) src="{{ asset('website/assets/images/buy-2-get-1-free.png') }}"  @else src="{{ asset('website/assets/images/buy_one_get_one.jpg') }}" @endif
+
+     class="animated-offer-img"
+     style="height: 10rem; width: 15rem; float: right; z-index: 168;">
+<style>
+    .animated-offer-img {
+        animation: bouncePulse 2s ease-in-out infinite;
+        transition: transform 0.3s ease;
+    }
+
+    @keyframes bouncePulse {
+        0%, 100% {
+            transform: scale(1) translateY(0);
+        }
+        25% {
+            transform: scale(1.05) translateY(-5px);
+        }
+        50% {
+            transform: scale(1.1) translateY(0);
+        }
+        75% {
+            transform: scale(1.05) translateY(5px);
+        }
+    }
+</style>
+
+                        <div class="stars-rating">
+                            <div class="star-rating">
+                                <span class="star-5"></span>
+                            </div>
+                            <div class="count-star">
+                                ({{$product->avg_rating}})
+                            </div>
+                        </div>
+                        <div class="availability">
+                            {{__('availability:')}}
+                            <a href="#"> @if(($product->in_stock) >0) {{__('yes')}} @else {{__('no')}} @endif </a>
+                        </div>
+                        <div class="price">
+                            <span id="price">
+								<del style="padding-right:20px">
+                                    {{$product->price." ".config('app.currency')}}
+                                </del>
+								
+                                @php
+                                    $price_after = $product->price; 
+								// Initialize with the original price
+                                    if ($product->discount_type == "percent") {
+                                        $price_after -= ($product->price * $product->discount / 100);
+								$discount_amount_computed=($product->price * $product->discount / 100);
+                                    } else {
+                                        $price_after -= $product->discount;
+								$discount_amount_computed=$product->discount;
+								
+                                    }
+                                @endphp
+                            <span id="selected-attributes">{{$price_after}}</span> {{config('app.currency')}}
+                            </span>
+                        </div>
+                        <div class="variations">
+
+                            <div class="attribute attribute_color">
+
+                                <div class="color-text text-attribute">
+                                    {{__('select type')}}:
+                                </div>
+                                <div class="list-color list-item" style="position:absolute !important">
+                                    @if(!empty($variations))
+                                    @foreach($variations as $i=>$variation)
+                                    <a href="#" class="color4 {{$i}}-option" style="border-radius:999px !important; " >{{$variation->type}}</a>
+                                    @endforeach
+
+                                   @endif
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="group-button">
+                            <div class="yith-wcwl-add-to-wishlist" style="margin-top:95px; !important">
+                                <div class="yith-wcwl-add-button">
+                                    <a href="#" onclick="add_delete_fav(event, {{ $product->id }})" @if($isFavorite) style="color:#ab8e66;" 
+                                     @else style="color:#000000;" @endif>
+                                    
+                                    {{__('Add to Wishlist')}}</a>
+                                </div>
+                            </div>
+                            <div class="quantity-add-to-cart">
+                                <div class="quantity">
+                                    <div class="control">
+                                        <a class="btn-number qtyminus quantity-minus" href="#">-</a>
+                                        <input type="text" data-step="1" data-min="0" value="1" title="Qty"
+                                               class="input-qty qty" size="4">
+                                        <a href="#" class="btn-number qtyplus quantity-plus">+</a>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="selected-variation" name="selected_variation" value="">
+                                <button class="single_add_to_cart_button button" onclick="addToCart({{ $product->id }}, $('.input-qty').val(),$('#selected-variation').val(),'cart')">{{__('Add to cart')}}</button>
+							
+                            </div>
+                        </div>
+						
+						<div class="header style7">
+						<!--<div class="header-control" style="margin-top: -4.1rem !important;margin-right: 20rem;!important">
+						  -->
+                          <div class="block-minicart_detail block-minicart stelina-mini-cart block-header stelina-dropdown">
+                            <a href="@if(App\Modules\Core\Helper::getCartCount() > 0) {{ route('carts.list-cart') }} @else javascript:void(0); @endif" class="shopcart-icon" @if(App\Modules\Core\Helper::getCartCount() == 0)  @endif 
+                            class="shopcart-icon" style="">
+                               
+                                <span class="count" id="cart-count" style="top: -49px !important;">
+										{{ App\Modules\Core\Helper::getCartCount() }}
+                                </span>
+                            </a>
+							  
+							
+           
+                        </div>
+					<!--	</div>-->
+                        <!--<div class="shopnow">
+								<button class="single_shopnow_button button" onclick="shopNow({{ $product->id }}, $('.input-qty').val(),$('#selected-variation').val(),'shop_cart')" 
+                                 style="
+    /* margin-top: -4.1rem !important; */
+    margin-right: auto;
+    margin-left:61px !important;
+    
+    top: 90px;
+
+   background: #dca716;
+    padding-left: 9rem;
+    padding-right: 8rem;
+
+    /*margin-top: 2rem;
+    margin-left: -10rem;
+    float: inherit;
+    */
+">{{__('Shop Now')}}</button>
+							</div>-->
+                            <div class="shopnow">
+    <button class="single_shopnow_button button animated-cart-btn"
+        onclick="shopNow({{ $product->id }}, $('.input-qty').val(), $('#selected-variation').val(), 'shop_cart')"
+        style="margin-left: 61px !important; top: 90px; background: #dca716; padding-left: 9rem; padding-right: 8rem;">
+        {{ __('Shop Now') }}
+    </button>
+</div>
+<style>
+    .animated-cart-btn {
+        animation: subtlePulse 2s ease-in-out infinite;
+        font-weight: bold;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    @keyframes subtlePulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+    }
+</style>
+
+					</div>
+                    </div>
+                </div>
+                @if(($product->category_id)!=113)
+                <div class="tab-details-product">
+                    <ul class="tab-link">
+                        <li class="active">
+                            <a data-toggle="tab" aria-expanded="true" href="#product-descriptions">{{__('Descriptions')}} </a>
+                        </li>
+
+                       <!-- <li class="">
+                            <a data-toggle="tab" aria-expanded="true" href="#reviews">{{__('Reviews')}}</a>
+                        </li>-->
+                    </ul>
+                    <div class="tab-container">
+                        <div id="product-descriptions" class="tab-panel active">
+                            {!!  $product->description!!}
+
+                        </div>
+                       <!-- <div id="reviews" class="tab-panel">
+                            <div class="reviews-tab">
+                                <div class="comments">
+                                    <h2 class="reviews-title">
+                                        1 review for
+                                        <span>Glorious Eau</span>
+                                    </h2>
+                                    <ol class="commentlist">
+                                        <li class="conment">
+                                            <div class="conment-container">
+                                                <a href="#" class="avatar">
+                                                    <img src="assets/images/avartar.png" alt="img">
+                                                </a>
+                                                <div class="comment-text">
+                                                    <div class="stars-rating">
+                                                        <div class="star-rating">
+                                                            <span class="star-5"></span>
+                                                        </div>
+                                                        <div class="count-star">
+                                                            (1)
+                                                        </div>
+                                                    </div>
+                                                    <p class="meta">
+                                                        <strong class="author">Cobus Bester</strong>
+                                                        <span>-</span>
+                                                        <span class="time">June 7, 2013</span>
+                                                    </p>
+                                                    <div class="description">
+                                                        <p>Simple and effective design. One of my favorites.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ol>
+                                </div>
+                                <div class="review_form_wrapper">
+                                    <div class="review_form">
+                                        <div class="comment-respond">
+                                            <span class="comment-reply-title">Add a review </span>
+                                            <form class="comment-form-review">
+                                                <p class="comment-notes">
+                                                    <span class="email-notes">Your email address will not be published.</span>
+                                                    Required fields are marked
+                                                    <span class="required">*</span>
+                                                </p>
+                                                <div class="comment-form-rating">
+                                                    <label>Your rating</label>
+                                                    <p class="stars">
+                                        						<span>
+                                        							<a class="star-1" href="#"></a>
+                                        							<a class="star-2" href="#"></a>
+                                        							<a class="star-3" href="#"></a>
+                                        							<a class="star-4" href="#"></a>
+                                        							<a class="star-5" href="#"></a>
+                                        						</span>
+                                                    </p>
+                                                </div>
+                                                <p class="comment-form-comment">
+                                                    <label>
+                                                        Your review
+                                                        <span class="required">*</span>
+                                                    </label>
+                                                    <textarea title="review" id="comment" name="comment" cols="45"
+                                                              rows="8"></textarea>
+                                                </p>
+                                                <p class="comment-form-author">
+                                                    <label>
+                                                        Name
+                                                        <span class="">*</span>
+                                                    </label>
+                                                    <input title="author" id="author" name="author" type="text"
+                                                           value="">
+                                                </p>
+                                                <p class="comment-form-email">
+                                                    <label>
+                                                        Email
+                                                        <span class="">*</span>
+                                                    </label>
+                                                    <input title="email" id="email" name="email" type="email"
+                                                           value="">
+                                                </p>
+                                                <p class="form-submit">
+                                                    <input name="submit" type="submit" id="submit" class="submit"
+                                                           value="Submit">
+                                                </p>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>-->
+                    </div>
+                </div>
+                @endif
+                <div style="clear: both;"></div>
+                <div class="related products product-grid">
+                    <h2 class="product-grid-title">{{__('You may also like')}}</h2>
+                    <div class="owl-products owl-slick equal-container nav-center" >
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+    
+@endsection
+@section('script')
+<script src="{{asset('website/assets/js/owl.carousel.min.js')}}"></script>
+@endsection
+@push('script')
+    <script type="text/javascript">
+        $(document).ready(function() {
+            
+                    // Push to dataLayer for item viewed event
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                event: "custon_view_item",
+                ecommerce: {
+                    currency: " {{config('app.currency')}}", // Change as per your currency if needed
+                    value: {{ $price_after }}, // Actual price of the product
+                    items: [
+                        {
+                            item_id: "{{ $product->id }}", // Actual product ID
+                            item_name: "{{ $product->name }}", // Actual product name
+                            item_brand: "{{ $product->brand ?? $product->category}}", // Actual brand name, use a default if not available
+                            item_category: "{{ $product->category ?? 'General' }}", // Actual category name, use a default if not available
+                            item_variant: "{{ $product->variations ?? 'N/A' }}", // Actual variant, if any
+                            price: {{ $price_after}}, // Actual price of the product
+                            quantity: 1 // Set to 1 for the viewed item
+                        },
+                    ]
+                }
+            });
+            var variations = @json($variations);
+             var discount_type = '{{$product->discount_type}}';
+			var discount= '{{$product->discount}}';
+            var selectedSize = '';
+            var selectedType = '';
+
+            // Click event for size options
+            $('.list-color a').on('click', function(event) {
+                event.preventDefault(); // Prevent the default anchor behavior
+                selectedSize = $(this).text(); // Get the selected size
+				$('.list-color a').css("background","#84664d");
+				$(this).css("background","#ee7f21");
+                updateSelectedAttributes(); // Update the display
+            });
+
+
+            // Function to update the displayed selected attributes
+           /* function updateSelectedAttributes() {
+                var combinedText = selectedSize + ' - ' + selectedType; // Combine selected options
+
+
+                $('#selected-attributes').text(combinedText); // Update the display element
+            }*/
+            // Function to update the displayed selected attributes
+            function updateSelectedAttributes() {
+			
+                var combinedText = selectedSize; // Combine selected options
+
+                  console.log(combinedText);
+                // Find the price based on combinedText
+                var selectedVariation = variations.find(function(variation) {
+                    return variation.type === combinedText;
+                });
+                if (selectedVariation) {
+                var originalPrice = selectedVariation.price;
+					//alert(originalPrice);
+                var discountAmount;
+
+                // Determine discount type and calculate the discounted price
+                if (discount_type === "percent") {
+                    discountAmount = (originalPrice *discount / 100);
+                } else {
+                    discountAmount = discount;
+                }
+
+                var priceAfterDiscount = (originalPrice - discountAmount).toFixed(2);
+
+                // Update the price display
+                $('#selected-attributes').text(priceAfterDiscount);
+                $("#price del").text(originalPrice.toFixed(2)); // Show original price
+
+                // Save the variation object as a JSON string in the hidden input
+                $('#selected-variation').val(JSON.stringify(selectedVariation));
+            } else {
+                $('#selected-attributes').text('Price not available');
+                $('#selected-variation').val('');
+            }
+               /* if (selectedVariation) {
+					//alert(selectedVariation.price.toFixed(2));
+					//alert('{{$price_after}}');
+                    // Update the price display, assuming you have an element with id 'price'
+                    $('#selected-attributes').text((selectedVariation.price-'{{$discount_amount_computed}}').toFixed(2));
+					$("#price del").text(selectedVariation.price);
+                    // Save the variation object as a JSON string in the hidden input
+                    var variationArray = [selectedVariation]; // Wrap in an array
+                    $('#selected-variation').val(JSON.stringify(selectedVariation));
+                } else {
+                    $('#selected-attributes').text('Price not available');
+                    $('#selected-variation').val('');
+                }*/
+            }
+        });
+
+        function addToCart(productId, quantity,variations,cart_type="cart") {
+					
+             
+        // Push to dataLayer for add to cart event
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            event: "custom_add_to_cart",
+            ecommerce: {
+                currency:" {{config('app.currency')}}", // Change as per your currency if needed
+                value: {{ $product->price }}, // Actual price of the product
+                items: [
+                    {
+                        item_id: "{{ $product->id }}", // Actual product ID
+                        item_name: "{{ $product->name }}", // Actual product name
+                        item_brand: "{{ $product->brand ?? $product->category }}", // Actual brand name, use a default if not available
+                        item_category: "{{ $product->category ?? 'General' }}", // Actual category name, use a default if not available
+                        item_variant: "{{ $product->variants ?? 'N/A' }}", // Actual variant, if any
+                        price: {{ $product->price }}, // Actual price of the product
+                        quantity: quantity // Use the selected quantity
+                    }
+                ]
+            }
+        });       
+                    
+                    
+                    
+                    	
+				$(".single_add_to_cart_button").css("background","#f99812");
+			//alert("shjhsj");
+            $.ajax({
+                url: "{{ route('carts.add-to-cart') }}", // Replace with your actual route
+                method: "POST",
+                data: {
+                    product_id: productId,
+                    quantity: quantity,
+                    variations:variations,
+                    _token: "{{ csrf_token() }}" // Include CSRF token for security
+                },
+                success: function(response) {
+                   // alert(response.success); // Show success message
+                    // Optionally update cart count or UI here
+                    $('#cart-count').text(response.cart_count);
+                   // $('#cart-count1').text(response.cart_count);
+                    $('#item-count').text(response.cart_count + ' {{ __('item(s)') }}');
+
+                    if (response.count > 0) {
+                        $('.no-product').hide();
+                    } else {
+                        $('.no-product').show();
+                    }
+				if(cart_type=="cart"){
+                    // Show success alert
+            Swal.fire({
+                icon: 'success',
+                title: "{{__('Added to Cart')}}",
+                text: "{{__('Your item has been successfully added to the cart!')}}",
+                confirmButtonText: "{{__('OK')}}"
+            }).then(() => {
+                window.location.reload(); // Reload after the alert is closed
+            });
+
+				}
+                },
+                error: function(xhr) {
+                   // alert(xhr.responseJSON.error); // Show error message
+					// Show error alert
+					Swal.fire({
+						icon: 'error',
+						title: "{{__('Error')}}",
+						text: xhr.responseJSON.error || 'An unexpected error occurred.',
+						confirmButtonText: "{{__('Try Again')}}"
+					});
+                }
+            });
+        }
+		
+function shopNow(productId, quantity, variations) {
+
+	$(".single_add_to_cart_button").css("background","#f99812");
+			//alert("shjhsj");
+            $.ajax({
+                url: "{{ route('carts.add-to-cart') }}", // Replace with your actual route
+                method: "POST",
+                data: {
+                    product_id: productId,
+                    quantity: quantity,
+                    variations:variations,
+                    _token: "{{ csrf_token() }}" // Include CSRF token for security
+                },
+                success: function(response) {
+                   // alert(response.success); // Show success message
+                    // Optionally update cart count or UI here
+                    $('#cart-count').text(response.cart_count);
+                   // $('#cart-count1').text(response.cart_count);
+                    $('#item-count').text(response.cart_count + ' {{ __('item(s)') }}');
+
+                    if (response.count > 0) {
+                        $('.no-product').hide();
+                    } else {
+                        $('.no-product').show();
+                    }
+					 window.location.href = "{{ route('checkout.index') }}";
+				}
+			});
+}
+        function initializeSlider() {
+            if ($('.owl-products').hasClass('slick-initialized')) {
+                $('.owl-products').slick('unslick'); // Destroy the previous instance
+            }
+            $('.owl-products').slick({
+                autoplay: true,
+                autoplaySpeed: 1000,
+                arrows: true,
+                dots: false,
+                infinite: true,
+                speed: 800,
+                rows: 1,
+                responsive: [
+                    {
+                        breakpoint: 2000,
+                        settings: { slidesToShow: 3 }
+                    },
+                    {
+                        breakpoint: 1200,
+                        settings: { slidesToShow: 2 }
+                    },
+                    {
+                        breakpoint: 992,
+                        settings: { slidesToShow: 2 }
+                    },
+                    {
+                        breakpoint: 480,
+                        settings: { slidesToShow: 1 }
+                    }
+                ]
+            });
+        }
+
+        $(document).ready(function () {
+
+
+        var category_id='{{$product->category_id}}';
+        $.ajax({
+            method: "GET",
+            url: "{{ route('products.list') }}",
+            data: {category_id:category_id ,slider:"slider",current_product:'{{$product->id}}'},
+            dataType:"html",
+            success:function (data) {
+                console.log(data);
+                //$(".owl-products").empty();
+                // Clear existing products if needed
+                $(".owl-products").empty();
+                // Append new products fetched from the server
+                $(".owl-products").append(data);
+
+                // Initialize the slider after adding new items
+                initializeSlider();
+            }
+        });
+        });
+    </script>
+
+@endpush

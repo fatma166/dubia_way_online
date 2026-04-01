@@ -1,0 +1,24 @@
+/*
+Modern website theme for Dubai Way
+- Gold, white, and black color palette
+- Rounded corners, soft shadows
+- Modern buttons and cards
+- Responsive and RTL support
+*/
+
+:root {
+  --main-gold: #bfa15a;
+  --main-white: #fff;
+  --main-gray: #faf9f6;
+}
+body {
+  background: var(--main-gray);
+}
+.footer {
+  background: var(--main-gold);
+  color: var(--main-white);
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 4px 24px #bfa15a22;
+  margin-top: 32px;
+  padding: 32px 18px;
+}

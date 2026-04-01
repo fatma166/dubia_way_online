@@ -1,0 +1,3 @@
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^www\.dubaiwayeg\.com$ [NC]
+RewriteRule ^(.*)$ https://dubaiwayeg.com/$1 [L,R=301]

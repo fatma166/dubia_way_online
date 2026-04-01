@@ -1,0 +1,115 @@
+<?php
+namespace App\Http\Controllers\website;
+
+use App\Http\Controllers\Controller;
+use App\Models\Coupon;
+use App\Repositories\Api\BannerRepositories;
+use App\Repositories\Api\FoodRepository;
+use Carbon\Carbon;
+
+use App\CentralLogics\CategoryLogic;
+use App\CentralLogics\Helpers;
+use App\Http\Requests\Api\CategoryRequest;
+use App\Models\Category;
+use App\Modules\Core\HTTPResponseCodes;
+use App\Repositories\Api\CategoryRepository;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Jenssegers\Agent\Agent;
+use Illuminate\Support\Facades\Cache;
+class HomeController extends Controller
+{
+    public function index(Request $request){
+       // $request['id']=config('app.default_vendor');
+
+         //$data['categories'] =$this->list_cats($request);
+
+        $food=new FoodRepository();
+        $zone_ids=[];
+        $restaurant_id=config('app.default_vendor');
+        $category_ids=[];
+        $limit=4;
+        $offset=0;
+        $location="";
+        $filter_data=[];
+        $coupon= Coupon::orderBy('created_at','desc')->where('restaurant_id',$restaurant_id)->first();
+		$filter_data=['slider_status'=>1];
+        $data['foods'] = Cache::remember('home_foods_list', 1800, function () use ($food, $zone_ids, $restaurant_id, $category_ids, $limit, $offset, $location, $filter_data) {
+            return $food->get_food($zone_ids,$restaurant_id,$category_ids,$limit,$offset,$location,$filter_data);
+        });
+      //  print_r($data['foods']); exit;
+        $banner = new BannerRepositories();
+        $zone_ids=false;
+         $data['sliders'] = Cache::remember('home_sliders', 3600, function () use ($banner, $zone_ids) {
+             return $banner->get_banner($zone_ids,"homefirst","");
+         });
+         $data['sliders_mobile'] = Cache::remember('home_sliders_mobile', 3600, function () use ($banner, $zone_ids) {
+             return $banner->get_banner($zone_ids,"homefirst_mobile","");
+         });
+		
+		//print_r($data['sliders']); exit;
+        $banners_offers = Cache::remember('home_banners_offers', 3600, function () use ($banner, $zone_ids) {
+            return $banner->get_banner($zone_ids,"homedown_discount","");
+        });
+//print_r($banners_offers); exit;
+        return view('website-views.home',compact('data','banners_offers','coupon'));
+    }
+    public function list_cats(Request $request)
+    {
+
+
+        try {
+            $cat=new CategoryRepository();
+            $categories = $cat->list_cats($request);
+
+            return $categories;
+
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    public function get_food(Request $request)
+    {
+        $filter_data=[];
+        $limit= $request->limit;
+        $offset=$request->offset;
+        $restaurant_id=$request->restaurant_id;
+        $category_ids=$request->category_ids;
+
+        if((!$request->filled('zone_id')) && !empty($request['zone_id'])) {
+            $zone_ids=array($request['zone_id']);
+        }else {
+            $data = array('latitude' => $request['lati'], 'longitude' => $request['longi']);
+            $zone_ids = $this->get_zone_from_location($data);
+        }
+
+        //try {
+        $location=[];
+        if($request->filled('lati')&& $request->filled('lati'))
+            $location= array('lat' => $request['lati'], 'lng' => $request['longi']);
+        if($request->has('search'))
+            $filter_data=['name'=>$request->search];
+        if($request->has('current_food')){
+            if(isset($filter_data['name'])){
+                $filter_data=['except_id'=>$request->current_food,'name'=>$request->search];
+            }else{
+                $filter_data=['except_id'=>$request->current_food];
+            }
+        }
+
+        $food=new FoodRepository();
+        $foods= $food->get_food($zone_ids,$restaurant_id,$category_ids,$limit,$offset,$location,$filter_data);
+
+        return response()->json([
+            'status' => HTTPResponseCodes::Sucess['status'],
+            'message'=>HTTPResponseCodes::Sucess['message'],
+            'errors' => [],
+            'data' => $foods,
+            'code'=>HTTPResponseCodes::Sucess['code']
+        ],HTTPResponseCodes::Sucess['code']);
+
+
+    }
+
+}

@@ -9,3 +9,5 @@
 backup*
 public/images/product
 .idea
+*.log
+dubia_way_online.git

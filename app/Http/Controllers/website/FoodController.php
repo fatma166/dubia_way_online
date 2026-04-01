@@ -1,0 +1,93 @@
+<?php
+namespace App\Http\Controllers\website;
+
+use App\Http\Controllers\Controller;
+use App\Repositories\Api\BannerRepositories;
+use App\Repositories\Api\FoodRepository;
+use Carbon\Carbon;
+
+use App\CentralLogics\CategoryLogic;
+use App\CentralLogics\Helpers;
+use App\Http\Requests\Api\CategoryRequest;
+use App\Models\Category;
+use App\Modules\Core\HTTPResponseCodes;
+use App\Repositories\Api\CategoryRepository;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
+class FoodController extends Controller
+{
+    public function index(Request $request)
+    {
+
+
+    }
+    public function get_popular_food(Request $request,$filter_data='')
+    {
+        $limit= $request->limit??0;
+        $offset=$request->offset??0;
+
+        $product=new FoodRepository();
+       // $filter_data['favourite_desc']='desc';
+        $products = $product->get_popular($filter_data, $limit, $offset, true);
+
+        //if($request->postion=="home_best"){
+       if($request->postion=="home_best"){
+           
+            return view('website-views.home_partails.bestseller',compact('products'));
+        }
+       return($products);
+    }
+
+    public function get_latest_food(Request $request,$filter_data='')
+    {
+        $limit= $request->limit??0;
+        $offset=$request->offset??0;
+
+        $product=new FoodRepository();
+        $filter_data=array('created_at'=>'asc');
+       // $request->postion=="latest";
+
+        $products= $product->get_latest($filter_data, $limit , $offset,true);
+
+        if($request->postion=="latest"){
+            return view('website-views.home_partails.bestseller',compact('products'));
+        }
+        return($products);
+    }
+
+    public function list_food(Request $request, $filter_data="all")
+    {
+
+        $limit= $request->limit??0;
+        $offset=$request->offset??0;
+        if($request->filled('type'))
+            $type=$request->type;
+
+        $filter_data=[];
+        if($request->has('high_orders')&&$request->high_orders==1)
+            $filter_data['order_count']='asc';
+        if($request->has('high_rate')&&$request->high_rate==1)
+            $filter_data['high_rate']='asc';
+        if($request->has('arrange_order'))
+            $filter_data['arrange_order']='desc';
+        if($request->has('category_id'))
+            $filter_data['category_id']=$request['category_id'];
+      if($request->has('favourite')){}
+         // $filter_data['favourite']=1;
+       /* $filter_data['compilation_id']=$request->compilation_id;
+        if($request->has('search')&&$request['search']!="")
+            $filter_data['name']=$request->search;*/
+        $product=new FoodRepository();
+        $products= $product->list_food($filter_data,$limit,$offset,true);
+
+        if($request->has('favourite')){
+            return view('website-views.home_partails.home_feature_product',compact('products'));
+        }elseif ($request->has('slider')){
+            return view('website-views.products.details.slider',compact('products'));
+        }
+         return view('website-views.home_partails.bestseller',compact('products'));
+
+
+    }
+}
